@@ -22,9 +22,9 @@ def index():
         translate_to = request.form.get("translate-to")
 
         translation = GoogleTranslator(
-            source=translate_from, target=translate_to  # type: ignore
+            source=translate_from, target=translate_to
         ).translate(
-            to_translate  # type: ignore
+            to_translate
         )
         history = HistoryModel(
             {
@@ -54,9 +54,9 @@ def reverse():
 
     translate_to, translate_from = translate_from, translate_to
     translation = GoogleTranslator(
-        source=translate_to, target=translate_from  # type: ignore
+        source=translate_to, target=translate_from
     ).translate(
-        to_translate  # type: ignore
+        to_translate
     )
     history = HistoryModel(
         {
@@ -72,6 +72,6 @@ def reverse():
         text_to_translate=to_translate,
         translate_from=translate_from,
         translate_to=translate_to,
-        translated=translation,  # type: ignore
+        translated=translation,
         languages=LanguageModel.list_dicts(),
     )

@@ -18,10 +18,10 @@ expected = [
 
 
 def test_request_history():
-    json_list = HistoryModel.list_as_json()
-    languages_list = json.loads(json_list)
+    list_json = HistoryModel.list_as_json()
+    list_languages = json.loads(list_json)
 
-    for translation in languages_list:
+    for translation in list_languages:
         translation.pop("_id", None)
 
-    assert languages_list == expected
+    assert list_languages == expected
