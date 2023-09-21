@@ -22,9 +22,9 @@ def index():
         translate_to = request.form.get("translate-to")
 
         translation = GoogleTranslator(
-            source=translate_from, target=translate_to
+            source=translate_from, target=translate_to  # type: ignore
         ).translate(
-            to_translate
+            to_translate  # type: ignore
         )
         history = HistoryModel(
             {
@@ -40,7 +40,7 @@ def index():
         text_to_translate=to_translate,
         translate_from=translated_from,
         translate_to=translate_to,
-        translated=translation or translated,
+        translated=translation or translated,  # type: ignore
         languages=languages,
     )
 
@@ -48,23 +48,30 @@ def index():
 # Req. 6
 @translate_controller.route("/reverse", methods=["POST"])
 def reverse():
-    text_to_translate = request.form.get(
-        "text-to-translate", "O que deseja traduzir"
+    to_translate = request.form.get("text-to-translate")
+    translate_from = request.form.get("translate-from")
+    translate_to = request.form.get("translate-to")
+
+    translate_to, translate_from = translate_from, translate_to
+    translation = GoogleTranslator(
+        source=translate_to, target=translate_from  # type: ignore
+    ).translate(
+        to_translate  # type: ignore
     )
-    translate_from = request.form.get("translate-from", "pt")
-    translate_to = request.form.get("translate-to", "en")
-
-    translated_text = GoogleTranslator(
-        source=translate_from, target=translate_to
-    ).translate(text_to_translate)
-
-    languages = LanguageModel.list_dicts()
+    history = HistoryModel(
+        {
+            "text_to_translate": to_translate,
+            "translate_from": translate_from,
+            "translated_text": translation,
+        }
+    )
+    history.save()
 
     return render_template(
         "index.html",
-        languages=languages,
-        text_to_translate=text_to_translate,
-        translate_from=translate_to,
-        translate_to=translate_from,
-        translated=translated_text,
+        text_to_translate=to_translate,
+        translate_from=translate_from,
+        translate_to=translate_to,
+        translated=translation,  # type: ignore
+        languages=LanguageModel.list_dicts(),
     )
